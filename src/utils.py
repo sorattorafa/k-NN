@@ -59,9 +59,7 @@ def load_test():
     return test_matrix
 
 def get_instance(k, training_norm_dataframe, test_norm_dataframe, distance, percent, normalization):
-    actual_knn = knn.KNeighbors(n_neighbors=k)
-    actual_knn.set_training_data(training_norm_dataframe)
-    actual_knn.set_distance_type(distance)   
+    actual_knn = knn.KNeighbors(n_neighbors=k, distance_type=distance, trainig_data =training_norm_dataframe)    
     confusion_matrix = [ [ 0 for _ in range(10) ] for _ in range(10) ]
     for _class, _object in test_norm_dataframe.iterrows():
         classified_class = actual_knn.classify(_object.values)
@@ -86,4 +84,5 @@ def create_instances(test_matrix, training_matrix):
                 for k in (available_ks):
                     instance = get_instance(k, training_norm_dataframe, test_norm_dataframe, distance, percent, normalization)
                     instances.append(instance)
+                    return_response(instances)
     return instances
