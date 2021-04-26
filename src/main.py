@@ -5,5 +5,5 @@ if __name__ == '__main__':
     test_matrix = utils.load_test()
     training_matrix = utils.load_training()
     instances =  utils.create_instances(test_matrix, training_matrix)
-    utils.return_response(instances)
+    utils.save_response(instances)
     print('Finish!')

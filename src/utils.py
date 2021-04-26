@@ -17,7 +17,7 @@ def normalize(matrix,normalization):
     dataframe.drop(labels, axis=1, inplace=True)
     return dataframe.apply(normalization , axis=1).copy()
 
-def return_response(instances):
+def save_response(instances):
     output = open('response.txt','w')
     for instance in instances:
         output.write("------------------------------------------------------------------------------\n")
