@@ -95,4 +95,5 @@ def create_instances(test_matrix, training_matrix):
                 for k in (instances_config['k']):
                     instance = get_instance(k, training_norm_dataframe, test_norm_dataframe, distance, percent, normalization)
                     instances.append(instance)
+                    save_response(instances)
     return instances

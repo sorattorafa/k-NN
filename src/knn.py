@@ -1,24 +1,14 @@
 import numpy as np
 import pandas as pd
-from scipy.spatial import distance
 from statistics import mode
+import distances as distances
 
 class KNeighbors:
     def __init__(self, n_neighbors=3, trainig_data=None, distance_type='euclidean'):
         self.n_neighbors = n_neighbors
-        if(distance_type == 'manhattan'): 
-            self.calc_distance = self.manhattan_distance        
-        else:
-            self.calc_distance = self.euclidean_distance            
+        condition = distance_type == 'manhattan'
+        self.calc_distance = distances.manhattan_distance if(condition) else distances.euclidean_distance        
         self.training_dataframe = trainig_data
-        
-    @staticmethod
-    def euclidean_distance(x,y):
-        return distance.euclidean(x,y)
-    
-    @staticmethod
-    def manhattan_distance(x,y):
-        return distance.cityblock(x,y)
             
     def classify(self,new_object):                
         nearest_neighbors = [[float('inf'),None] for _ in range(self.n_neighbors)]
