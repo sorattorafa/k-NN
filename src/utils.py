@@ -24,11 +24,11 @@ def save_response(instances):
         output.write(f"| K = {instance['k']} | Percent: {instance['percent']*100} % | Normalization: {instance['normalization']} | Distance: {instance['distance']} |\n\n")
         cf = np.asarray(instance['confusion_matrix'])
         accuracy = (cf.trace()/cf.sum())*100
-        output.write(f"| Hit rate: {accuracy} %, error rate: {100 - accuracy} % |\n\n")
+        output.write(f"| Hit rate: {accuracy} %, error rate: {'{:.2f}'.format(100 - accuracy)} % |\n\n")
         output.write(f"confusion_matrix: \n")      
         for _class in instance['confusion_matrix']:
             output.write(f"{_class}\n")        
-        output.write("\n--------------------------------------------------------------------------\n")
+        output.write("\n----------------------------------------------------------------------------\n")
         
 def reduce_dataframe(dataframe, percent):
     if(percent == 1):
@@ -60,22 +60,17 @@ def load_test():
         print("File test does not exist")   
     return test_matrix
 
-def get_instance(k, training_norm_dataframe, test_norm_dataframe, distance, percent, normalization):
-    
+def get_instance(test_instance, training_norm_dataframe, test_norm_dataframe):
+    k = test_instance['k']
+    distance = test_instance['distance']
     actual_knn = knn.KNeighbors(n_neighbors=k, distance_type=distance, trainig_data =training_norm_dataframe)    
     confusion_matrix = [ [ 0 for _ in range(10) ] for _ in range(10) ]
     
     for _class, _object in test_norm_dataframe.iterrows():
         classified_class = actual_knn.classify(_object.values)
-        confusion_matrix[_class][classified_class] += 1    
+        confusion_matrix[_class][classified_class] += 1
 
-    return {
-        'k': k,
-        'percent': percent,
-        'normalization': normalization.__name__,
-        'distance': distance,
-        'confusion_matrix': confusion_matrix
-    }
+    return confusion_matrix
 
 def create_instances(test_matrix, training_matrix):
     instances = []
@@ -93,7 +88,13 @@ def create_instances(test_matrix, training_matrix):
             training_norm_dataframe = reduce_dataframe(normalize(training_matrix,normalization),percent)
             for distance in (instances_config['distances']):
                 for k in (instances_config['k']):
-                    instance = get_instance(k, training_norm_dataframe, test_norm_dataframe, distance, percent, normalization)
-                    instances.append(instance)
-                    save_response(instances)
+                    test_instance = {
+                        'k': k,
+                        'percent':percent,
+                        'normalization': normalization.__name__,
+                        'distance':distance,
+                    }
+                    confusion_matrix = get_instance(test_instance, training_norm_dataframe, test_norm_dataframe)
+                    test_instance['confusion_matrix'] = confusion_matrix
+                    instances.append(test_instance)
     return instances
