@@ -6,4 +6,4 @@ if __name__ == '__main__':
     training_matrix = utils.load_training()
     instances =  utils.create_instances(test_matrix, training_matrix)
     utils.return_response(instances)
-    print('Done !')
+    print('Finish!')
