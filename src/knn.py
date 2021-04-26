@@ -21,7 +21,7 @@ class KNeighbors:
         return distance.cityblock(x,y)
             
     def classify(self,new_object):                
-        nearest_neighbors= [[float('inf'),None] for _ in range(self.n_neighbors)]
+        nearest_neighbors = [[float('inf'),None] for _ in range(self.n_neighbors)]
         for _class, _object in self.training_dataframe.iterrows():
             neighbor_distance = self.calc_distance(new_object,_object.values)
             nearest_neighbors.sort(key=lambda dist: dist[0], reverse=True)

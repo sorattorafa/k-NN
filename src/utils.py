@@ -12,7 +12,9 @@ def z_score(attribute):
 
 def normalize(matrix,normalization):
     dataframe = pd.DataFrame(matrix,index=matrix[:,-1].astype(int))
-    dataframe.drop(dataframe.columns[len(dataframe.columns)-1], axis=1, inplace=True)
+    labels_index = len(dataframe.columns)-1
+    labels = dataframe.columns[labels_index]
+    dataframe.drop(labels, axis=1, inplace=True)
     return dataframe.apply(normalization , axis=1).copy()
 
 def return_response(instances):
@@ -59,11 +61,14 @@ def load_test():
     return test_matrix
 
 def get_instance(k, training_norm_dataframe, test_norm_dataframe, distance, percent, normalization):
+    
     actual_knn = knn.KNeighbors(n_neighbors=k, distance_type=distance, trainig_data =training_norm_dataframe)    
     confusion_matrix = [ [ 0 for _ in range(10) ] for _ in range(10) ]
+    
     for _class, _object in test_norm_dataframe.iterrows():
         classified_class = actual_knn.classify(_object.values)
-        confusion_matrix[_class][classified_class] += 1                    
+        confusion_matrix[_class][classified_class] += 1    
+
     return {
         'k': k,
         'percent': percent,
@@ -74,14 +79,20 @@ def get_instance(k, training_norm_dataframe, test_norm_dataframe, distance, perc
 
 def create_instances(test_matrix, training_matrix):
     instances = []
-    for percent in (0.25,0.5,1):  
-        for normalization in (min_max,z_score):
+    
+    instances_config = {
+        'percents' : [0.25,0.5,1],
+        'normalizations' : [min_max,z_score],
+        'distances' : ['euclidean','manhattan'],
+        'k' : [1,3,5,7,9,11,13,15,17,19]
+    }
+
+    for percent in (instances_config['percents']):
+        for normalization in (instances_config['normalizations']):
             test_norm_dataframe = normalize(test_matrix,normalization)
             training_norm_dataframe = reduce_dataframe(normalize(training_matrix,normalization),percent)
-            available_distances = ['euclidean','manhattan']
-            for distance in (available_distances):
-                available_ks = [1,3,5,7,9,11,13,15,17,19]
-                for k in (available_ks):
+            for distance in (instances_config['distances']):
+                for k in (instances_config['k']):
                     instance = get_instance(k, training_norm_dataframe, test_norm_dataframe, distance, percent, normalization)
                     instances.append(instance)
                     return_response(instances)
