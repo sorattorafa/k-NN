@@ -60,10 +60,7 @@ def load_test():
         print("File test does not exist")   
     return test_matrix
 
-def get_instance(test_instance, training_norm_dataframe, test_norm_dataframe):
-    k = test_instance['k']
-    distance = test_instance['distance']
-    actual_knn = knn.KNeighbors(n_neighbors=k, distance_type=distance, trainig_data =training_norm_dataframe)    
+def get_confusion_matrix(actual_knn, training_norm_dataframe, test_norm_dataframe):   
     confusion_matrix = [ [ 0 for _ in range(10) ] for _ in range(10) ]
     
     for _class, _object in test_norm_dataframe.iterrows():
@@ -94,7 +91,8 @@ def create_instances(test_matrix, training_matrix):
                         'normalization': normalization.__name__,
                         'distance':distance,
                     }
-                    confusion_matrix = get_instance(test_instance, training_norm_dataframe, test_norm_dataframe)
+                    actual_knn = knn.KNeighbors(n_neighbors=k, distance_type=distance, trainig_data =training_norm_dataframe)
+                    confusion_matrix = get_confusion_matrix(actual_knn, training_norm_dataframe, test_norm_dataframe)
                     test_instance['confusion_matrix'] = confusion_matrix
                     instances.append(test_instance)
     return instances
