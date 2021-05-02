@@ -12,7 +12,7 @@ import random
 
 ### Run
 ```
-python3 src/main.py resources/treinamento.txt resources/teste.txt
+python3 src/main.py files/treinamento.txt files/teste.txt
 ```
 
 ### Response
