@@ -17,3 +17,7 @@ python3 src/main.py files/treinamento.txt files/teste.txt
 
 ### Response
 response.txt
+
+### Documentation 
+
+- knn-documentation.pdf
